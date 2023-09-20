@@ -2,6 +2,7 @@
 #include <string.h>
 #include <string>
 #include <fstream>
+#include <algorithm>
 #include "AES.h"
 using namespace std;
 
@@ -123,7 +124,7 @@ public:
 
         SubNibblesDecrypt();
 
-        plainText += getResult();
+        plainText += hexToAscii(getResult());
     }
 
     int decryptDemo()
@@ -151,10 +152,25 @@ public:
         inputKey();
 
         decryptBlock();
+
+        cout << "Decrypted Cipher Text is: " << getResult() << endl;
     }
 
     bool checkInputFileFormat(string &rawText, int &count)
     {
+        string temp = "";
+
+        //removing null padding
+        for (int i = 0; i < rawText.length(); i++)
+        {
+            if (rawText[i] != ' ')
+            {
+                temp += rawText[i];
+            }
+        }
+
+        rawText = temp;
+
         while ((rawText.length() % 4) != 0)
         {
             //append "null" hex to the end
@@ -167,21 +183,19 @@ public:
     }
 
     int decryptFile() {
-        ifstream MyReadFile("secret.txt");
-
         string rawText = "";
         string temp = "";
 
+        ifstream MyReadFile("secret.txt");
         while (getline(MyReadFile, temp)) {
             rawText += temp;
         }
-
         MyReadFile.close();
 
-        //to remember how many "null" we appended to the rawText
-        //(cannot be > 3)
+        cout << rawText << endl;
+
+        //to remember how many "null" we appended to the rawText (cannot be > 3)
         int appendCount = 0;
-        
         if (checkInputFileFormat(rawText, appendCount) == false)
         {
             cout<<"Input file format error!"<<endl;
@@ -190,8 +204,7 @@ public:
 
         inputKey();
 
-        int blocks = (rawText.length()/4);
-        
+        int blocks = (rawText.length() / 4);
         for (int i = 0; i < blocks; i++)
         {
             for (int j = 0; j < 4; j++)
@@ -225,9 +238,9 @@ int main()
 {
     DecryptAES aes;
 
-    //aes.decryptDemo();
-
     aes.decryptFile();
+
+    aes.decryptDemo();
 
     return 0;
 }

@@ -2,6 +2,7 @@
 #include <vector>
 #include <string.h>
 #include <string>
+#include <sstream>
 using namespace std;
 
 class AES
@@ -102,6 +103,18 @@ public:
             return converter.binary[value];
         }
         return "0000";
+    }
+
+    string hexToAscii(string str)
+    {
+        stringstream conv;
+        for (int i = 0; i < str.length(); i += 2)
+        {
+            unsigned char byte = stoi(str.substr(i, 2), nullptr, 16);
+            conv << byte;
+        }
+        //returning String
+        return conv.str();
     }
 
     void deepCopyNibbles(string newNibbles[4])
