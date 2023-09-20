@@ -212,6 +212,11 @@ public:
 
         cout << "Decrypted Cipher Text is: " << plainText << endl;
 
+        //writing this plaintext to a file
+        ofstream MyFile("plain.txt");
+        MyFile << plainText;
+        MyFile.close();
+
         return 0;
     }
 };
